@@ -688,11 +688,13 @@
     // ===== OPTIMIZE WORKFLOW =====
 
     function switchTab(workflow, tab) {
-      const tabs = document.querySelectorAll(`#${workflow}-${tab}`).parentElement.querySelectorAll('.tab-content');
+      const tabElement = document.getElementById(`${workflow}-${tab}`);
+      const container = tabElement.parentElement;
+      const tabs = container.querySelectorAll('.tab-content');
       tabs.forEach(t => t.style.display = 'none');
-      document.getElementById(`${workflow}-${tab}`).style.display = 'block';
+      tabElement.style.display = 'block';
       
-      document.querySelectorAll(`.tab`).forEach(t => t.classList.remove('active'));
+      container.querySelectorAll(`.tab`).forEach(t => t.classList.remove('active'));
       event.target.classList.add('active');
     }
 
