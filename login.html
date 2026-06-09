@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="Logo.png.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Resumewrite - Login</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      color: white;
+      font-family: 'Montserrat', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .login-container {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 50px;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 132, 255, 0.2);
+      width: 100%;
+      max-width: 450px;
+      border: 1px solid rgba(0, 132, 255, 0.1);
+    }
+    .login-container h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 2rem;
+      background: linear-gradient(135deg, #0084ff 0%, #0066cc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .login-subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 30px;
+      font-size: 0.95rem;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #ccc;
+      font-size: 0.95em;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="password"] {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #333;
+      border-radius: 8px;
+      background: #111;
+      color: white;
+      font-size: 16px;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+      transition: all 0.3s ease;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #0084ff;
+      box-shadow: 0 0 10px rgba(0, 132, 255, 0.3);
+      background: #1a1a1a;
+    }
+    .remember-forgot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      font-size: 0.9em;
+    }
+    .remember-forgot a {
+      color: #0084ff;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .remember-forgot a:hover {
+      color: #0099ff;
+      text-decoration: underline;
+    }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #0084ff 0%, #0066cc 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 20px rgba(0, 132, 255, 0.3);
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0, 132, 255, 0.5);
+      background: linear-gradient(135deg, #0099ff 0%, #0077dd 100%);
+    }
+    .register-link {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 0.95em;
+      color: #888;
+    }
+    .register-link a {
+      color: #0084ff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .register-link a:hover {
+      color: #0099ff;
+      text-decoration: underline;
+    }
+    .error {
+      color: #ff6b6b;
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h1>Login to Resumewrite</h1>
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required>
+        <div class="error" id="usernameError">Username is required</div>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+        <div class="error" id="passwordError">Password is required</div>
+      </div>
+      <div class="remember-forgot">
+        <label><input type="checkbox" id="rememberMe"> Remember me</label>
+        <a href="#">Forgot password?</a>
+      </div>
+      <button type="submit" class="btn">Login</button>
+    </form>
+    <div class="register-link">
+      <p>Don't have an account? <a href="#">Register here</a></p>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

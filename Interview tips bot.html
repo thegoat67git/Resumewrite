@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="Logo.png.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Tips - Interactive Guide</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        :root {
+            --primary-blue: #0084ff;
+            --dark-bg: #111;
+            --dark-card: #1a1a1a;
+            --accent-dark: #222;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: black;
+            color: white;
+        }
+
+        .main {
+            width: 100%;
+            padding: 40px 30px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #0084ff;
+        }
+
+        .page-header h1 {
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            font-size: 1.05em;
+            color: #aaa;
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 600px;
+            padding: 12px 18px;
+            border: 2px solid #0084ff;
+            border-radius: 8px;
+            font-size: 1em;
+            background: var(--dark-bg);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #0084ff;
+            box-shadow: 0 0 15px rgba(0, 132, 255, 0.3);
+        }
+
+        .search-input::placeholder {
+            color: #666;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #222;
+            overflow-x: auto;
+            padding-bottom: 0;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            color: #888;
+            white-space: nowrap;
+            background: none;
+            border: none;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95em;
+        }
+
+        .nav-tab:hover {
+            color: #0084ff;
+        }
+
+        .nav-tab.active {
+            color: #0084ff;
+            border-bottom-color: #0084ff;
+        }
+
+        /* Content Area */
+        .content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #0084ff;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        /* Tip Cards */
+        .tip-card {
+            margin-bottom: 15px;
+            border: 2px solid #222;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: var(--dark-card);
+        }
+
+        .tip-card:hover {
+            border-color: #0084ff;
+            box-shadow: 0 0 20px rgba(0, 132, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .tip-header {
+            padding: 18px 22px;
+            background: var(--dark-card);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        .tip-header:hover {
+            background: var(--accent-dark);
+            border-left: 4px solid #0084ff;
+            padding-left: 18px;
+        }
+
+        .tip-header.active {
+            background: var(--accent-dark);
+            border-left: 4px solid #0084ff;
+        }
+
+        .tip-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: #0084ff;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: 700;
+            color: white;
+            font-size: 0.85em;
+        }
+
+        .tip-title {
+            flex: 1;
+            font-size: 1.05em;
+            font-weight: 600;
+            color: white;
+        }
+
+        .tip-toggle {
+            font-size: 1.3em;
+            transition: transform 0.3s ease;
+            color: #0084ff;
+        }
+
+        .tip-header.active .tip-toggle {
+            transform: rotate(180deg);
+        }
+
+        .tip-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+            background: var(--dark-bg);
+        }
+
+        .tip-content.active {
+            padding: 22px;
+            max-height: 600px;
+        }
+
+        .tip-body {
+            color: #ccc;
+            line-height: 1.8;
+            font-size: 0.95em;
+        }
+
+        .tip-body strong {
+            color: #0084ff;
+        }
+
+        .tip-body ul {
+            margin-left: 20px;
+            margin-top: 10px;
+            list-style-type: disc;
+        }
+
+        .tip-body li {
+            margin-bottom: 6px;
+            color: #ccc;
+        }
+
+        .tip-body p {
+            margin-top: 12px;
+        }
+
+        /* Quick Tips List */
+        .quick-tips-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .quick-tip-item {
+            padding: 16px;
+            background: var(--dark-card);
+            border-left: 4px solid #0084ff;
+            border-radius: 6px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transition: all 0.3s ease;
+            border: 2px solid #222;
+            border-left: 4px solid #0084ff;
+        }
+
+        .quick-tip-item:hover {
+            background: var(--accent-dark);
+            box-shadow: 0 0 15px rgba(0, 132, 255, 0.1);
+        }
+
+        .quick-tip-item input[type="checkbox"] {
+            margin-top: 4px;
+            cursor: pointer;
+            accent-color: #0084ff;
+            width: 18px;
+            height: 18px;
+        }
+
+        .quick-tip-item label {
+            flex: 1;
+            cursor: pointer;
+            color: #ccc;
+            font-weight: 500;
+        }
+
+        .quick-tip-item input[type="checkbox"]:checked + label {
+            color: #666;
+            text-decoration: line-through;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark-bg);
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            border-top: 2px solid #222;
+            margin-top: 50px;
+        }
+
+        .footer-links {
+            margin-top: 15px;
+        }
+
+        .footer-links a {
+            color: #0084ff;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .no-results p {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        /* Navbar styling */
+        nav.navbar {
+            background: #111;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 56px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 4px;
+            background: none;
+            width: auto;
+        }
+
+        .nav-menu li {
+            margin: 0;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 8px 14px;
+            border-radius: 6px;
+            color: white;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .nav-link:hover {
+            background: #2a2a2a;
+        }
+
+        .nav-link.active {
+            background: #0084ff;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 1.6em;
+            }
+
+            .quick-tips-list {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .nav-tab {
+                padding: 12px 18px;
+                font-size: 0.85em;
+            }
+
+            .tip-header {
+                flex-wrap: wrap;
+                padding: 16px;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                height: auto;
+                padding: 10px 0;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="Logo.png.png" alt="Resumewrite logo" class="logo-img">
+                <span>Resumewrite</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="about.html" class="nav-link">About Us</a></li>
+                <li><a href="Contact.html" class="nav-link">Contact Us</a></li>
+                <li><a href="Resumewriter.html" class="nav-link">Resume Writer</a></li>
+                <li><a href="Interview%20tips%20bot.html" class="nav-link active">Interview Tips</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main">
+        <div class="page-header">
+            <h1>Interview Tips Guide</h1>
+            <p>Master your interview preparation with our comprehensive tips</p>
+        </div>
+
+        <div class="search-container">
+            <input 
+                type="text" 
+                class="search-input" 
+                id="searchInput" 
+                placeholder="Search tips... (e.g., 'research', 'questions', 'body language')"
+            >
+        </div>
+
+        <div class="nav-tabs">
+            <div class="nav-tab active" data-section="quick-tips">Quick Tips</div>
+            <div class="nav-tab" data-section="before">Before Interview</div>
+            <div class="nav-tab" data-section="on-day">On the Day</div>
+            <div class="nav-tab" data-section="during">During Interview</div>
+            <div class="nav-tab" data-section="after">After Interview</div>
+        </div>
+
+        <div class="content">
+            <!-- Quick Tips Section -->
+            <div class="section active" id="quick-tips">
+                <div class="section-title">8 Quick Tips to Remember</div>
+                <p style="color: #ccc; margin-bottom: 20px;">Start with these essential tips for interview success:</p>
+                <div class="quick-tips-list">
+                    <div class="quick-tip-item">
+                        <input type="checkbox" id="q1">
+                        <label for="q1">Arrive 10 minutes early (in-person) or log in 5 minutes early (online)</label>
+                    </div>
+                    <div class="quick-tip-item">
+                        <input type="checkbox" id="q2">
+                        <label for="q2">Be polite and greet everyone you meet</label>
+                    </div>
+                    <div class="quick-tip-item">
+                        <input type="checkbox" id="q3">
+                        <label for="q3">Research your interviewer(s)</label>
+                    </div>
+                    <div class="quick-tip-item">
+                        <input type="checkbox" id="q4">
+                        <label for="q4">Ask questions</label>
+                    </div>
+                    <div class="quick-tip-item">
+                        <input type="checkbox" id="q5">
+                        <label for="q5">Be honest</label>
+                    </div>
+                    <div class="quick-tip-item">
+                        <input type="checkbox" id="q6">
+                        <label for="q6">Practice active listening</label>
+                    </div>
+                    <div class="quick-tip-item">
+                        <input type="checkbox" id="q7">
+                        <label for="q7">Present professionally with positive body language</label>
+                    </div>
+                    <div class="quick-tip-item">
+                        <input type="checkbox" id="q8">
+                        <label for="q8">Thank them and ask about next steps</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Before Interview Section -->
+            <div class="section" id="before">
+                <div class="section-title">Before Your Interview</div>
+                
+                <div class="tip-card">
+                    <div class="tip-header">
+                        <span class="tip-number">1</span>
+                        <span class="tip-title">Know Yourself & What You Will Bring</span>
+                        <span class="tip-toggle">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        <div class="tip-body">
+                            <p>Understand your unique value proposition. Know your strengths, experiences, and how they align with the role. Be ready to articulate what you bring to the position and the company.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-header">
+                        <span class="tip-number">2</span>
+                        <span class="tip-title">Come Prepared for Key Questions</span>
+                        <span class="tip-toggle">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        <div class="tip-body">
+                            <p><strong>Prepare answers for common questions:</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>"Tell me about yourself"</li>
+                                <li>"What are your strengths and weaknesses?"</li>
+                                <li>"Why did you apply for this role?"</li>
+                                <li>"Where do you see yourself in 5 years?"</li>
+                                <li>"Tell me about a problem you solved at work"</li>
+                            </ul>
+                            <p style="margin-top: 10px;">Practice your answers out loud to build confidence.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-header">
+                        <span class="tip-number">3</span>
+                        <span class="tip-title">Practice with a Friend or Family Member</span>
+                        <span class="tip-toggle">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        <div class="tip-body">
+                            <p>Conduct mock interviews with someone you trust. Get feedback on your answers, body language, and confidence level. Repeat this process multiple times to feel more prepared.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-header">
+                        <span class="tip-number">4</span>
+                        <span class="tip-title">Research the Organisation</span>
+                        <span class="tip-toggle">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        <div class="tip-body">
+                            <p>Learn about the company's mission, values, recent news, and industry position. Understanding the organisation shows initiative and enthusiasm. Read reviews on sites like Glassdoor to learn about company culture and what others are saying about the employer.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-header">
+                        <span class="tip-number">5</span>
+                        <span class="tip-title">Review the Position Description</span>
+                        <span class="tip-toggle">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        <div class="tip-body">
+                            <p>Print out or save the job description and underline specific skills the employer is looking for. Think about examples from your experience that align with these requirements. Be ready to discuss how your background makes you a great fit.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- On the Day Section -->
+            <div class="section" id="on-day">
+                <div class="section-title">On the Interview Day</div>
+
+                <div class="tip-card">
+                    <div class="tip-header">
+                        <span class="tip-number">1</span>
+                        <span class="tip-title">Remember: The Interview Starts as Soon as You Leave the House</span>
+                        <span class="tip-toggle">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        <div class="tip-body">
+                            <p><strong>Project a professional image from the moment you leave home:</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>You never know who you might bump into</li>
+                                <li>Be friendly and confident in your commute</li>
+                                <li>Avoid negative conversations or complaints</li>
+                                <li>Make conversation with the receptionist and other staff</li>
+                                <li>Don't cram facts at the last minute—arrive early and relax</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-header">
+                        <span class="tip-number">2</span>
+                        <span class="tip-title">Dress Appropriately</span>
+                        <span class="tip-toggle">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        <div class="tip-body">
+                            <p>Choose professional attire that matches the company culture. When in doubt, dress more formally than you would for the job. Ensure your clothes are clean, well-fitted, and appropriate for the industry.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-header">
+                        <span class="tip-number">3</span>
+                        <span class="tip-title">Be On Time and Organised</span>
+                        <span class="tip-toggle">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        <div class="tip-body">
+                            <p><strong>In-person:</strong> Arrive 10 minutes early. Allow time for parking, finding the building, and a comfort break.</p>
+                            <p><strong>Online:</strong> Log in 5 minutes early to test your technology, lighting, and background.</p>
+                            <p>Have all necessary documents, notes, and your phone charged.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-header">
+                        <span class="tip-number">4</span>
+                        <span class="tip-title">Treat Everyone You Meet as Your Interviewer</span>
+                        <span class="tip-toggle">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        <div class="tip-body">
+                            <p>Be polite and friendly to everyone—receptionists, security staff, other employees. Your behaviour with all staff is observed and reported. Everyone contributes to the interview process assessment.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- During Interview Section -->
+            <div class="section" id="during">
+                <div class="section-title">During the Interview</div>
+
+                <div class="tip-card">
+                    <div class="tip-header">
+                        <span class="tip-number">1</span>
+                        <span class="tip-title">Maintain Positive Body Language</span>
+                        <span class="tip-toggle">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        <div class="tip-body">
+                            <p><strong>Key points:</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>Sit up straight and maintain good posture</li>
+                                <li>Make eye contact with your interviewer(s)</li>
+                                <li>Smile and nod to show engagement</li>
+                                <li>Avoid crossing your arms or fidgeting</li>
+                                <li>Use natural hand gestures to emphasize points</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-header">
+                        <span class="tip-number">2</span>
+                        <span class="tip-title">Practice Active Listening</span>
+                        <span class="tip-toggle">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        <div class="tip-body">
+                            <p>Listen carefully to the interviewer's questions before responding. Take a moment to think about your answer. Ask for clarification if needed. Show genuine interest in what they're saying.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-header">
+                        <span class="tip-number">3</span>
+                        <span class="tip-title">Be Honest</span>
+                        <span class="tip-toggle">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        <div class="tip-body">
+                            <p>Don't exaggerate or make up experience. If you don't know something, say so and explain how you'd learn it. Honesty builds trust and shows integrity.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-header">
+                        <span class="tip-number">4</span>
+                        <span class="tip-title">Prepare Questions to Ask</span>
+                        <span class="tip-toggle">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        <div class="tip-body">
+                            <p><strong>Ask thoughtful questions such as:</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>"What does a typical day in this role look like?"</li>
+                                <li>"How would you describe the team culture?"</li>
+                                <li>"What are the key priorities for this position?"</li>
+                                <li>"How do you measure success in this role?"</li>
+                                <li>"What opportunities are there for professional development?"</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-header">
+                        <span class="tip-number">5</span>
+                        <span class="tip-title">Present Professionally</span>
+                        <span class="tip-toggle">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        <div class="tip-body">
+                            <p>Speak clearly and at a moderate pace. Avoid filler words like "um" and "like". Use proper grammar. Show enthusiasm for the role and company. Let your personality shine while maintaining professionalism.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- After Interview Section -->
+            <div class="section" id="after">
+                <div class="section-title">After the Interview</div>
+
+                <div class="tip-card">
+                    <div class="tip-header">
+                        <span class="tip-number">1</span>
+                        <span class="tip-title">Thank Them & Ask About Next Steps</span>
+                        <span class="tip-toggle">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        <div class="tip-body">
+                            <p>At the end of the interview, thank them for their time. Ask what the next steps in the process are and when you can expect to hear back. This shows genuine interest and professionalism.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-header">
+                        <span class="tip-number">2</span>
+                        <span class="tip-title">Follow Up After the Job Interview</span>
+                        <span class="tip-toggle">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        <div class="tip-body">
+                            <p><strong>Send a follow-up email within 24 hours:</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>Thank the interviewer(s) for their time</li>
+                                <li>Reiterate your interest in the position</li>
+                                <li>Briefly mention a specific topic you discussed</li>
+                                <li>Highlight why you're a good fit for the role</li>
+                                <li>Keep it professional and concise (2-3 paragraphs)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-header">
+                        <span class="tip-number">3</span>
+                        <span class="tip-title">Frequently Asked Questions</span>
+                        <span class="tip-toggle">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        <div class="tip-body">
+                            <p><strong>Q: How long should I wait before following up?</strong></p>
+                            <p>A: Send your thank-you email within 24 hours. If you haven't heard back after the timeline they provided, wait 1-2 days then send a polite inquiry.</p>
+                            
+                            <p style="margin-top: 15px;"><strong>Q: Should I call or email?</strong></p>
+                            <p>A: Email is preferred unless they specifically said they'd call. It gives them a written record and allows them to respond at their convenience.</p>
+                            
+                            <p style="margin-top: 15px;"><strong>Q: What if I made a mistake during the interview?</strong></p>
+                            <p>A: Don't dwell on it. If it was significant, you can briefly acknowledge it in your follow-up email and provide the correct information. Most mistakes are minor and won't derail your chances.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="no-results" id="noResults" style="display: none;">
+                <p>No tips found matching your search.</p>
+                <small>Try different keywords like 'research', 'questions', or 'body language'</small>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>💡 Remember: Interview success comes from preparation, practice, and presenting your authentic self with confidence.</p>
+        <div class="footer-links">
+            <a href="about.html">About</a>
+            <a href="Contact.html">Contact</a>
+            <a href="login.html">Login</a>
+        </div>
+    </footer>
+
+    <script>
+        // Tab Navigation
+        const navTabs = document.querySelectorAll('.nav-tab');
+        const sections = document.querySelectorAll('.section');
+
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const sectionId = tab.dataset.section;
+                
+                // Remove active from all tabs and sections
+                navTabs.forEach(t => t.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+                
+                // Add active to clicked tab and corresponding section
+                tab.classList.add('active');
+                document.getElementById(sectionId).classList.add('active');
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // Expandable Cards
+        const tipHeaders = document.querySelectorAll('.tip-header');
+
+        tipHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                const isActive = header.classList.contains('active');
+                
+                // Close all other cards
+                tipHeaders.forEach(h => {
+                    if (h !== header && h.classList.contains('active')) {
+                        h.classList.remove('active');
+                        h.nextElementSibling.classList.remove('active');
+                    }
+                });
+                
+                // Toggle current card
+                header.classList.toggle('active');
+                content.classList.toggle('active');
+            });
+        });
+
+        // Search Functionality
+        const searchInput = document.getElementById('searchInput');
+        const tipCards = document.querySelectorAll('.tip-card');
+        const quickTipsItems = document.querySelectorAll('.quick-tip-item');
+        const noResults = document.getElementById('noResults');
+
+        searchInput.addEventListener('keyup', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            let visibleCount = 0;
+
+            if (searchTerm === '') {
+                tipCards.forEach(card => card.style.display = 'block');
+                quickTipsItems.forEach(item => item.style.display = 'flex');
+                noResults.style.display = 'none';
+                return;
+            }
+
+            tipCards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            quickTipsItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        });
+
+        // Checkbox persistence (optional - stores in localStorage)
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+        checkboxes.forEach(checkbox => {
+            const key = `interview-tip-${checkbox.id}`;
+            
+            // Load saved state
+            if (localStorage.getItem(key) === 'true') {
+                checkbox.checked = true;
+            }
+            
+            // Save state on change
+            checkbox.addEventListener('change', () => {
+                localStorage.setItem(key, checkbox.checked);
+            });
+        });
+    </script>
+</body>
+</html>

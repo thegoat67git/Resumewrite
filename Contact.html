@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="Logo.png.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - Resumewrite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .main {
+      padding: 60px 40px;
+      max-width: 800px;
+      margin: 0 auto;
+      min-height: calc(100vh - 56px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .main section {
+      background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+      padding: 60px;
+      border-radius: 12px;
+      border: 2px solid #222;
+      width: 100%;
+      box-shadow: 0 0 30px rgba(0, 132, 255, 0.1);
+    }
+
+    .main h2 {
+      font-size: 2.2em;
+      font-weight: 800;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #0084ff 0%, #0066cc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .main > section > p {
+      font-size: 1.05em;
+      color: #888;
+      margin-bottom: 40px;
+    }
+
+    .contact-info h3 {
+      color: #0084ff;
+      font-size: 1.2em;
+      margin-bottom: 15px;
+    }
+
+    .contact-info p {
+      font-size: 1.05em;
+      line-height: 1.8;
+      margin-bottom: 10px;
+    }
+
+    .contact-info a {
+      color: #0084ff;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+
+    .contact-info a:hover {
+      text-decoration: underline;
+      color: #0099ff;
+    }
+
+    @media (max-width: 768px) {
+      .main {
+        padding: 40px 20px;
+      }
+
+      .main section {
+        padding: 40px 25px;
+      }
+
+      .main h2 {
+        font-size: 1.8em;
+      }
+    }
+  </style>
+
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <img src="Logo.png.png" alt="Resumewrite logo" class="logo-img">
+        <span>Resumewrite</span>
+      </div>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="about.html" class="nav-link">About Us</a></li>
+        <li><a href="Contact.html" class="nav-link active">Contact Us</a></li>
+        <li><a href="Resumewriter.html" class="nav-link">Resume Writer</a></li>
+        <li><a href="Interview tips bot.html" class="nav-link">Interview Tips</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="main">
+    <section>
+      <h2>Get In Touch</h2>
+      <p>Have questions or feedback? We'd love to hear from you!</p>
+      <div class="contact-info" style="margin-top: 40px; text-align: center;">
+        <h3 style="font-size: 1.3rem; margin-bottom: 15px;">Email</h3>
+        <p style="font-size: 1.2rem; color: #00d4ff;"><a href="mailto:contact@resumewrite.com" style="color: inherit;">contact@resumewrite.com</a></p>
+        <p style="margin-top: 20px; color: #b0b0b0;">We typically respond within 24 hours</p>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2026 Resumewrite. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="about.html">About</a>
+      <a href="Contact.html">Contact</a>
+      <a href="login.html">Login</a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

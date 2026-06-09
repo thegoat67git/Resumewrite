@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="Logo.png.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Builder - Resumewrite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    body {
+      background: black;
+      color: white;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .main {
+      padding: 0;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      min-height: calc(100vh - 56px);
+    }
+
+    .resume-builder-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+
+    /* Workflow Selection */
+    .workflow-selector {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .workflow-selector h1 {
+      font-size: 2.8em;
+      font-weight: 800;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #ffffff 0%, #0084ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .workflow-selector p {
+      font-size: 1.1em;
+      color: #888;
+      margin-bottom: 40px;
+    }
+
+    .workflow-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .workflow-card {
+      background: #1a1a1a;
+      border: 2px solid #222;
+      border-radius: 12px;
+      padding: 40px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .workflow-card:hover {
+      border-color: #0084ff;
+      box-shadow: 0 0 30px rgba(0, 132, 255, 0.2);
+      transform: translateY(-5px);
+    }
+
+    .workflow-icon {
+      font-size: 3em;
+    }
+
+    .workflow-card h2 {
+      font-size: 1.5em;
+      color: #0084ff;
+    }
+
+    .workflow-card p {
+      color: #b0b0b0;
+      text-align: left;
+      font-size: 0.95em;
+      line-height: 1.6;
+    }
+
+    .workflow-card .btn {
+      margin-top: auto;
+    }
+
+    /* Main Builder Layout */
+    .builder-wrapper {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    .builder-wrapper.active {
+      display: grid;
+    }
+
+    .builder-form {
+      background: #1a1a1a;
+      border: 2px solid #222;
+      border-radius: 12px;
+      padding: 30px;
+    }
+
+    .builder-form h3 {
+      font-size: 1.4em;
+      color: #0084ff;
+      margin-bottom: 25px;
+    }
+
+    /* Progress Indicator */
+    .progress-indicator {
+      margin-bottom: 30px;
+    }
+
+    .progress-bar {
+      background: #111;
+      height: 6px;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, #0084ff, #0066cc);
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      font-size: 0.9em;
+      color: #888;
+    }
+
+    /* Upload/Paste Area */
+    .upload-area {
+      border: 2px dashed #0084ff;
+      border-radius: 8px;
+      padding: 30px;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      background: rgba(0, 132, 255, 0.05);
+      margin-bottom: 20px;
+    }
+
+    .upload-area:hover {
+      border-color: #0099ff;
+      background: rgba(0, 132, 255, 0.1);
+    }
+
+    .upload-area.dragging {
+      border-color: #0099ff;
+      background: rgba(0, 132, 255, 0.15);
+    }
+
+    .upload-area p {
+      color: #888;
+      margin-bottom: 15px;
+    }
+
+    #resumeFile {
+      display: none;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 200px;
+      padding: 15px;
+      background: #111;
+      border: 2px solid #333;
+      border-radius: 8px;
+      color: white;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95em;
+      resize: vertical;
+      transition: all 0.3s ease;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #0084ff;
+      box-shadow: 0 0 10px rgba(0, 132, 255, 0.2);
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #ccc;
+      font-size: 0.95em;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px 15px;
+      background: #111;
+      border: 2px solid #333;
+      border-radius: 6px;
+      color: white;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95em;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #0084ff;
+      box-shadow: 0 0 10px rgba(0, 132, 255, 0.2);
+    }
+
+    .form-group input::placeholder {
+      color: #555;
+    }
+
+    .form-hint {
+      font-size: 0.85em;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 14px 30px;
+      font-size: 0.95em;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0084ff 0%, #0066cc 100%);
+      color: white;
+      box-shadow: 0 8px 20px rgba(0, 132, 255, 0.3);
+      width: 100%;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0, 132, 255, 0.5);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: #222;
+      color: #0084ff;
+      border: 2px solid #0084ff;
+      width: 100%;
+    }
+
+    .btn-secondary:hover {
+      background: #0084ff;
+      color: white;
+    }
+
+    .btn-small {
+      padding: 8px 16px;
+      font-size: 0.85em;
+      width: auto;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-group .btn {
+      flex: 1;
+    }
+
+    /* Resume Preview */
+    .resume-preview {
+      background: #1a1a1a;
+      border: 2px solid #222;
+      border-radius: 12px;
+      padding: 40px;
+      max-height: 70vh;
+      overflow-y: auto;
+      position: sticky;
+      top: 100px;
+    }
+
+    .resume-preview h3 {
+      font-size: 1.4em;
+      color: #0084ff;
+      margin-bottom: 20px;
+    }
+
+    .resume-content {
+      font-size: 0.9em;
+      line-height: 1.8;
+      color: #b0b0b0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: 'Courier New', monospace;
+    }
+
+    .resume-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-direction: column;
+    }
+
+    /* Loading State */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #0084ff;
+      margin: 20px 0;
+    }
+
+    .spinner {
+      border: 3px solid #333;
+      border-top: 3px solid #0084ff;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Messages */
+    .message {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 0.95em;
+    }
+
+    .message.success {
+      background: rgba(81, 207, 102, 0.1);
+      border: 2px solid #51cf66;
+      color: #51cf66;
+    }
+
+    .message.error {
+      background: rgba(255, 107, 107, 0.1);
+      border: 2px solid #ff6b6b;
+      color: #ff6b6b;
+    }
+
+    .message.info {
+      background: rgba(0, 132, 255, 0.1);
+      border: 2px solid #0084ff;
+      color: #0084ff;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #222;
+    }
+
+    .tab {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      color: #888;
+      cursor: pointer;
+      font-weight: 600;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .tab.active {
+      color: #0084ff;
+      border-bottom-color: #0084ff;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #1a1a1a;
+      border: 2px solid #222;
+      border-radius: 12px;
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .builder-wrapper.active {
+        grid-template-columns: 1fr;
+      }
+
+      .resume-preview {
+        position: static;
+        max-height: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .resume-builder-container {
+        padding: 20px;
+      }
+
+      .workflow-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .workflow-selector h1 {
+        font-size: 1.8em;
+      }
+
+      .btn-group {
+        flex-direction: column;
+      }
+    }
+
+    /* Scrollbar styling */
+    .resume-preview::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .resume-preview::-webkit-scrollbar-track {
+      background: #111;
+      border-radius: 4px;
+    }
+
+    .resume-preview::-webkit-scrollbar-thumb {
+      background: #0084ff;
+      border-radius: 4px;
+    }
+
+    .resume-preview::-webkit-scrollbar-thumb:hover {
+      background: #0099ff;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <img src="Logo.png.png" alt="Resumewrite logo" class="logo-img">
+        <span>Resumewrite</span>
+      </div>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="about.html" class="nav-link">About Us</a></li>
+        <li><a href="Contact.html" class="nav-link">Contact Us</a></li>
+        <li><a href="Resumewriter.html" class="nav-link active">Resume Writer</a></li>
+        <li><a href="Interview%20tips%20bot.html" class="nav-link">Interview Tips</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="main">
+    <div class="resume-builder-container">
+
+      <!-- Workflow Selection Screen -->
+      <div id="workflowSelect" class="workflow-selector">
+        <h1>Professional Resume Builder</h1>
+        <p>Choose how you'd like to build your resume</p>
+        
+        <div class="workflow-cards">
+          <!-- Optimize Workflow -->
+          <div class="workflow-card" onclick="selectWorkflow('optimize')">
+            <div class="workflow-icon">✨</div>
+            <h2>Optimize My Resume</h2>
+            <p>Upload or paste your existing resume. Our AI will enhance it with better wording, structure, and professional formatting while maintaining complete accuracy.</p>
+            <button class="btn btn-primary">Get Started</button>
+          </div>
+
+          <!-- Create Workflow -->
+          <div class="workflow-card" onclick="selectWorkflow('create')">
+            <div class="workflow-icon">📝</div>
+            <h2>Create From Scratch</h2>
+            <p>Build a professional resume through our guided step-by-step process. We'll ask only essential questions to craft your ideal resume.</p>
+            <button class="btn btn-primary">Get Started</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Optimize Resume Builder -->
+      <div id="optimizeBuilder" class="builder-wrapper">
+        <div class="builder-form">
+          <div onclick="goBack()" style="cursor: pointer; margin-bottom: 20px; color: #0084ff; font-weight: 600;">
+            ← Back to Menu
+          </div>
+          <h3>📄 Optimize Your Resume</h3>
+          <div id="optimizeMessage"></div>
+
+          <div class="tabs">
+            <button class="tab active" onclick="switchTab('optimize', 'upload')">Upload File</button>
+            <button class="tab" onclick="switchTab('optimize', 'paste')">Paste Text</button>
+          </div>
+
+          <!-- Upload Tab -->
+          <div id="optimize-upload" class="tab-content">
+            <div class="upload-area" id="uploadArea" onclick="document.getElementById('resumeFile').click()">
+              <p>📁 Click to upload or drag & drop</p>
+              <p style="font-size: 0.85em; color: #666;">PDF, Word (.docx), or Text files</p>
+            </div>
+            <input type="file" id="resumeFile" accept=".pdf,.docx,.txt" onchange="handleFileUpload(event)">
+          </div>
+
+          <!-- Paste Tab -->
+          <div id="optimize-paste" class="tab-content" style="display: none;">
+            <div class="form-group">
+              <label>Paste Your Resume</label>
+              <textarea id="resumeText" placeholder="Paste your resume content here..."></textarea>
+              <p class="form-hint">Tip: Include your complete resume content for best results</p>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" onclick="optimizeResume()" id="optimizeBtn">Optimize Resume</button>
+        </div>
+
+        <!-- Preview -->
+        <div class="resume-preview">
+          <h3>📄 Optimized Preview</h3>
+          <div id="optimizePreview" style="color: #666; text-align: center; padding: 40px 0;">
+            Your optimized resume will appear here
+          </div>
+          <div id="optimizeActions" class="resume-actions" style="display: none;">
+            <button class="btn btn-primary" onclick="downloadOptimizedResume()">Download PDF</button>
+            <button class="btn btn-secondary" onclick="copyOptimizedResume()">Copy Text</button>
+            <button class="btn btn-secondary" onclick="editOptimizedResume()">Edit Resume</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Create Resume Builder -->
+      <div id="createBuilder" class="builder-wrapper">
+        <div class="builder-form">
+          <div onclick="goBack()" style="cursor: pointer; margin-bottom: 20px; color: #0084ff; font-weight: 600;">
+            ← Back to Menu
+          </div>
+          <h3>📝 Build Your Resume</h3>
+
+          <!-- Progress -->
+          <div class="progress-indicator">
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">Step 1 of 5</div>
+          </div>
+
+          <div id="createMessage"></div>
+          <div id="createForm"></div>
+
+          <div class="btn-group">
+            <button class="btn btn-secondary" onclick="previousStep()" id="prevBtn" style="display: none;">← Previous</button>
+            <button class="btn btn-primary" onclick="nextStep()" id="nextBtn">Next →</button>
+          </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="resume-preview">
+          <h3>📄 Resume Preview</h3>
+          <div id="createPreview" style="color: #666; text-align: center; padding: 40px 0;">
+            Your resume will appear here as you fill it out
+          </div>
+          <div id="createActions" class="resume-actions" style="display: none;">
+            <button class="btn btn-primary" onclick="downloadCreatedResume()">Download PDF</button>
+            <button class="btn btn-secondary" onclick="copyCreatedResume()">Copy Text</button>
+            <button class="btn btn-secondary" onclick="editCreatedResume()">Edit Resume</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <h3 style="color: #0084ff; margin-bottom: 20px;">✏️ Edit Your Resume</h3>
+      <div class="form-group">
+        <label>What would you like to change?</label>
+        <textarea id="editInstructions" placeholder="E.g., 'Improve the professional summary' or 'Reword the achievements to be more impactful'..." style="min-height: 120px;"></textarea>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="applyEdits()">Apply Edits</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2026 Resumewrite. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="about.html">About</a>
+      <a href="Contact.html">Contact</a>
+      <a href="login.html">Login</a>
+    </div>
+  </footer>
+
+  <script src="api-config.js"></script>
+  <script src="api-config.js"></script>
+  <script>
+    const API_URL = window.API_URL;
+    let currentWorkflow = null;
+    let currentStep = 1;
+    const totalSteps = 5;
+    let userData = {};
+    let currentResume = '';
+    let stepQuestions = {};
+
+    const steps = ['contact', 'professional', 'experience', 'education', 'skills'];
+
+    function selectWorkflow(workflow) {
+      currentWorkflow = workflow;
+      document.getElementById('workflowSelect').style.display = 'none';
+      
+      if (workflow === 'optimize') {
+        document.getElementById('optimizeBuilder').classList.add('active');
+      } else {
+        document.getElementById('createBuilder').classList.add('active');
+        loadStep(1);
+      }
+    }
+
+    function goBack() {
+      currentWorkflow = null;
+      currentStep = 1;
+      userData = {};
+      currentResume = '';
+      
+      document.getElementById('workflowSelect').style.display = 'block';
+      document.getElementById('optimizeBuilder').classList.remove('active');
+      document.getElementById('createBuilder').classList.remove('active');
+      
+      clearMessages();
+    }
+
+    // ===== OPTIMIZE WORKFLOW =====
+
+    function switchTab(workflow, tab) {
+      const tabs = document.querySelectorAll(`#${workflow}-${tab}`).parentElement.querySelectorAll('.tab-content');
+      tabs.forEach(t => t.style.display = 'none');
+      document.getElementById(`${workflow}-${tab}`).style.display = 'block';
+      
+      document.querySelectorAll(`.tab`).forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          document.getElementById('resumeText').value = e.target.result;
+        };
+        reader.readAsText(file);
+      }
+    }
+
+    const uploadArea = document.getElementById('uploadArea');
+    if (uploadArea) {
+      uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragging');
+      });
+
+      uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragging');
+      });
+
+      uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragging');
+        const file = e.dataTransfer.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            document.getElementById('resumeText').value = event.target.result;
+          };
+          reader.readAsText(file);
+        }
+      });
+    }
+
+    async function optimizeResume() {
+      const resumeContent = document.getElementById('resumeText').value;
+      
+      if (!resumeContent.trim()) {
+        showMessage('optimize', 'Please enter or upload your resume content', 'error');
+        return;
+      }
+
+      showMessage('optimize', 'Optimizing your resume... This may take a moment.', 'info');
+      document.getElementById('optimizeBtn').disabled = true;
+
+      try {
+        const response = await fetch(`${API_URL}/optimize-resume`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ resumeContent })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) throw new Error(data.error);
+
+        currentResume = data.optimizedResume || data.optimizedResume;
+        document.getElementById('optimizePreview').innerHTML = `<div class="resume-content">${currentResume}</div>`;
+        document.getElementById('optimizeActions').style.display = 'flex';
+        
+        showMessage('optimize', '✓ Resume optimized successfully!', 'success');
+      } catch (error) {
+        showMessage('optimize', error.message || 'Failed to optimize resume', 'error');
+      } finally {
+        document.getElementById('optimizeBtn').disabled = false;
+      }
+    }
+
+    function downloadOptimizedResume() {
+      const element = document.createElement('div');
+      element.innerHTML = `<pre style="font-family: Arial; white-space: pre-wrap;">${currentResume}</pre>`;
+      
+      const opt = {
+        margin: 10,
+        filename: 'Optimized_Resume.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+      };
+      
+      html2pdf().set(opt).from(element).save();
+    }
+
+    function copyOptimizedResume() {
+      navigator.clipboard.writeText(currentResume);
+      showMessage('optimize', '✓ Resume copied to clipboard!', 'success');
+    }
+
+    function editOptimizedResume() {
+      document.getElementById('editModal').classList.add('active');
+    }
+
+    // ===== CREATE WORKFLOW =====
+
+    async function loadStep(step) {
+      const stepName = steps[step - 1];
+      const formContainer = document.getElementById('createForm');
+      
+      formContainer.innerHTML = '<div class="loading"><div class="spinner"></div><span>Loading questions...</span></div>';
+
+      try {
+        const response = await fetch(`${API_URL}/generate-questions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ stage: stepName })
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) throw new Error('Failed to load questions');
+
+        stepQuestions[step] = data.questions;
+        renderForm(data.questions, step);
+        updateProgress(step);
+
+      } catch (error) {
+        showMessage('create', error.message || 'Failed to load questions', 'error');
+      }
+    }
+
+    function renderForm(questions, step) {
+      const formContainer = document.getElementById('createForm');
+      formContainer.innerHTML = '';
+
+      questions.forEach((q, index) => {
+        const group = document.createElement('div');
+        group.className = 'form-group';
+
+        const label = document.createElement('label');
+        label.textContent = q.question;
+        group.appendChild(label);
+
+        let input;
+        if (q.type === 'textarea') {
+          input = document.createElement('textarea');
+          input.placeholder = q.placeholder;
+        } else if (q.type === 'select') {
+          input = document.createElement('select');
+          input.innerHTML = `<option value="">Select...</option>`;
+        } else {
+          input = document.createElement('input');
+          input.type = q.type || 'text';
+          input.placeholder = q.placeholder;
+        }
+
+        input.id = q.id;
+        input.required = q.required;
+        if (userData[q.id]) input.value = userData[q.id];
+
+        group.appendChild(input);
+        formContainer.appendChild(group);
+      });
+
+      // Update button states
+      document.getElementById('prevBtn').style.display = step > 1 ? 'block' : 'none';
+      document.getElementById('nextBtn').textContent = step === totalSteps ? 'Generate Resume →' : 'Next →';
+    }
+
+    function updateProgress(step) {
+      const percent = (step / totalSteps) * 100;
+      document.getElementById('progressFill').style.width = percent + '%';
+      document.getElementById('progressText').textContent = `Step ${step} of ${totalSteps}`;
+    }
+
+    function nextStep() {
+      if (currentStep === totalSteps) {
+        generateResume();
+      } else {
+        saveFormData();
+        currentStep++;
+        loadStep(currentStep);
+      }
+    }
+
+    function previousStep() {
+      if (currentStep > 1) {
+        saveFormData();
+        currentStep--;
+        loadStep(currentStep);
+      }
+    }
+
+    function saveFormData() {
+      const inputs = document.querySelectorAll('#createForm input, #createForm textarea, #createForm select');
+      inputs.forEach(input => {
+        if (input.value) userData[input.id] = input.value;
+      });
+    }
+
+    async function generateResume() {
+      saveFormData();
+      
+      showMessage('create', 'Generating your professional resume... This may take a moment.', 'info');
+      document.getElementById('nextBtn').disabled = true;
+
+      try {
+        const response = await fetch(`${API_URL}/generate-resume`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userData })
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) throw new Error(data.error);
+
+        currentResume = data.resume;
+        document.getElementById('createPreview').innerHTML = `<div class="resume-content">${currentResume}</div>`;
+        document.getElementById('createActions').style.display = 'flex';
+        document.getElementById('createForm').style.display = 'none';
+        document.getElementById('prevBtn').style.display = 'none';
+        document.getElementById('nextBtn').style.display = 'none';
+        
+        showMessage('create', '✓ Your professional resume is ready!', 'success');
+
+      } catch (error) {
+        showMessage('create', error.message || 'Failed to generate resume', 'error');
+      } finally {
+        document.getElementById('nextBtn').disabled = false;
+      }
+    }
+
+    function downloadCreatedResume() {
+      const element = document.createElement('div');
+      element.innerHTML = `<pre style="font-family: Arial; white-space: pre-wrap;">${currentResume}</pre>`;
+      
+      const opt = {
+        margin: 10,
+        filename: 'My_Resume.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+      };
+      
+      html2pdf().set(opt).from(element).save();
+    }
+
+    function copyCreatedResume() {
+      navigator.clipboard.writeText(currentResume);
+      showMessage('create', '✓ Resume copied to clipboard!', 'success');
+    }
+
+    function editCreatedResume() {
+      document.getElementById('editModal').classList.add('active');
+    }
+
+    // ===== EDIT FUNCTIONALITY =====
+
+    async function applyEdits() {
+      const instructions = document.getElementById('editInstructions').value;
+      
+      if (!instructions.trim()) {
+        alert('Please describe what you would like to change');
+        return;
+      }
+
+      const modalContent = document.querySelector('.modal-content');
+      const btn = modalContent.querySelector('.btn-primary');
+      btn.disabled = true;
+      btn.textContent = 'Applying edits...';
+
+      try {
+        const response = await fetch(`${API_URL}/edit-resume`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ resumeContent: currentResume, editInstructions: instructions })
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) throw new Error(data.error);
+
+        currentResume = data.resume;
+        const previewId = currentWorkflow === 'optimize' ? 'optimizePreview' : 'createPreview';
+        document.getElementById(previewId).innerHTML = `<div class="resume-content">${currentResume}</div>`;
+        
+        closeEditModal();
+        showMessage(currentWorkflow, '✓ Resume updated successfully!', 'success');
+
+      } catch (error) {
+        alert('Failed to apply edits: ' + error.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Apply Edits';
+      }
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').classList.remove('active');
+      document.getElementById('editInstructions').value = '';
+    }
+
+    // ===== UTILITIES =====
+
+    function showMessage(workflow, text, type) {
+      const msgElement = document.getElementById(`${workflow}Message`);
+      msgElement.innerHTML = `<div class="message ${type}">${text}</div>`;
+      msgElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function clearMessages() {
+      document.getElementById('optimizeMessage').innerHTML = '';
+      document.getElementById('createMessage').innerHTML = '';
+    }
+
+    // Close modal on outside click
+    document.getElementById('editModal').addEventListener('click', (e) => {
+      if (e.target.id === 'editModal') closeEditModal();
+    });
+  </script>
+</body>
+</html>

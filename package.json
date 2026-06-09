@@ -1,0 +1,22 @@
+{
+  "name": "resumewrite-resume-builder",
+  "version": "1.0.0",
+  "description": "Professional Resume Builder with AI optimization",
+  "main": "resume-builder-server.js",
+  "scripts": {
+    "start": "node resume-builder-server.js",
+    "dev": "nodemon resume-builder-server.js"
+  },
+  "keywords": ["resume", "builder", "ai", "openai"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "openai": "^4.28.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

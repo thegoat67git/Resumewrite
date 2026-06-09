@@ -1,0 +1,168 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+:root {
+  --body-color: #111;
+  --nav-color: #0084ff;
+  --accent-color: #555;
+  --search-bar-color: white;
+}
+html, body {
+  width: 100%;
+  min-height: 100vh;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: black;
+  color: white;
+}
+
+ul {
+  list-style-type: none;
+  padding: 12px 24px;
+  background: #111;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+li {
+  display: inline;
+  margin-right: 20px;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.main {
+  width: 100%;
+  min-height: 100vh;
+  padding: 30px 40px;
+  text-align: center;
+}
+
+.main img {
+  margin: 20px auto;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+h1 {
+  margin-bottom: 16px;
+}
+nav {
+  background: #111;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+nav .nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 56px;
+}
+.logo a {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: white;
+  text-decoration: none;
+}
+nav ul.nav-links {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 4px;
+  background: none;
+  width: auto;
+}
+nav ul.nav-links li { margin: 0; }
+nav ul.nav-links a {
+  display: block;
+  padding: 8px 14px;
+  border-radius: 6px;
+  color: white;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+nav ul.nav-links a:hover { background: #2a2a2a; }
+nav ul.nav-links a.active { background: #0084ff; font-weight: 600; }
+
+/* Updated Navbar Styles */
+nav.navbar {
+  background: #111;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 56px;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: white;
+  text-decoration: none;
+}
+
+.nav-logo img.logo-img {
+  height: 40px;
+  width: auto;
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 4px;
+  background: none;
+  width: auto;
+}
+
+.nav-menu li {
+  margin: 0;
+}
+
+.nav-link {
+  display: block;
+  padding: 8px 14px;
+  border-radius: 6px;
+  color: white;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.nav-link:hover {
+  background: #2a2a2a;
+}
+
+.nav-link.active {
+  background: #0084ff;
+  font-weight: 600;
+}
