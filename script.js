@@ -102,11 +102,15 @@ function logout() {
 
 // Registration functionality
 function handleRegister(event) {
+  console.log('handleRegister called');
   event.preventDefault();
+  console.log('Event prevented');
   
   var newUsername = document.getElementById('newUsername').value.trim();
   var newPassword = document.getElementById('newPassword').value.trim();
   var confirmPassword = document.getElementById('confirmPassword').value.trim();
+  
+  console.log('Form values:', { newUsername, newPassword, confirmPassword });
   
   // Reset errors
   document.getElementById('usernameError').style.display = 'none';
@@ -139,7 +143,10 @@ function handleRegister(event) {
     isValid = false;
   }
   
+  console.log('Validation result:', isValid);
+  
   if (!isValid) {
+    console.log('Validation failed');
     return;
   }
   
@@ -148,6 +155,7 @@ function handleRegister(event) {
   
   if (users[newUsername]) {
     document.getElementById('usernameTakenError').style.display = 'block';
+    console.log('Username already taken');
     return;
   }
   
@@ -158,10 +166,12 @@ function handleRegister(event) {
   };
   
   localStorage.setItem('resumewrite_users', JSON.stringify(users));
+  console.log('User registered successfully');
   
   // Show success message and redirect
   document.getElementById('successMessage').style.display = 'block';
   setTimeout(function() {
+    console.log('Redirecting to login');
     window.location.href = 'login.html';
   }, 2000);
 }
