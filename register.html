@@ -155,7 +155,7 @@
     <div class="register-content">
       <div class="register-container">
         <h1>Create Account</h1>
-        <form id="registerForm" onsubmit="handleRegister(event)">
+        <form id="registerForm">
           <div class="form-group">
             <label for="newUsername">Username</label>
             <input type="text" id="newUsername" name="newUsername" required>
@@ -176,7 +176,7 @@
             <input type="password" id="confirmPassword" name="confirmPassword" required>
             <div class="error" id="confirmError">Passwords do not match</div>
           </div>
-          <button type="submit" class="btn-register">Register</button>
+          <button type="button" class="btn-register" onclick="handleRegister(event)">Register</button>
           <div class="success" id="successMessage">Account created successfully! Redirecting...</div>
         </form>
         <div class="login-link">

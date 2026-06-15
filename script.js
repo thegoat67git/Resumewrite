@@ -103,7 +103,7 @@ function logout() {
 // Registration functionality
 function handleRegister(event) {
   console.log('handleRegister called');
-  event.preventDefault();
+  if (event) event.preventDefault();
   console.log('Event prevented');
   
   var newUsername = document.getElementById('newUsername').value.trim();
