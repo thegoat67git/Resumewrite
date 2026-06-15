@@ -710,6 +710,18 @@
   <script src="api-config.js"></script>
   <script>
     const API_URL = window.API_URL;
+    function isLoggedIn() {
+      return localStorage.getItem('resumewrite_loggedIn') === 'true';
+    }
+
+    // Enforce authentication for this page: redirect unsigned users to login
+    window.addEventListener('DOMContentLoaded', function() {
+      // allow renderer to run tests locally (localhost) without redirect
+      if (window.location.hostname !== 'localhost' && !isLoggedIn()) {
+        // redirect to login if not authenticated
+        window.location.href = 'login.html';
+      }
+    });
     let currentWorkflow = null;
     let currentStep = 1;
     const totalSteps = 5;
@@ -794,6 +806,11 @@
     }
 
     async function optimizeResume() {
+      if (!isLoggedIn()) {
+        showMessage('optimize', 'You must be logged in to optimize resumes. Redirecting to login...', 'error');
+        setTimeout(() => window.location.href = 'login.html', 1000);
+        return;
+      }
       const resumeContent = document.getElementById('resumeText').value;
       
       if (!resumeContent.trim()) {
@@ -1017,6 +1034,11 @@
     }
 
     async function generateResume() {
+      if (!isLoggedIn()) {
+        showMessage('create', 'You must be logged in to generate resumes. Redirecting to login...', 'error');
+        setTimeout(() => window.location.href = 'login.html', 1000);
+        return;
+      }
       saveFormData();
       
       showMessage('create', 'Generating your professional resume... This may take a moment.', 'info');
