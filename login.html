@@ -152,9 +152,24 @@
       <button type="submit" class="btn">Login</button>
     </form>
     <div class="register-link">
-      <p>Don't have an account? <a href="#">Register here</a></p>
+      <p>Don't have an account? <a href="register.html" id="registerLink">Register here</a></p>
     </div>
   </div>
   <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Login page loaded');
+      var reg = document.getElementById('registerLink');
+      if (reg) {
+        reg.addEventListener('click', function(e) {
+          console.log('Register link clicked — forcing navigation to register.html');
+          e.preventDefault();
+          window.location.href = 'register.html';
+        });
+      } else {
+        console.log('registerLink element not found');
+      }
+    });
+  </script>
 </body>
 </html>
