@@ -386,6 +386,40 @@
       margin: 8px 0 16px;
     }
 
+    .pdf-export-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 18px;
+      gap: 20px;
+    }
+
+    .pdf-export-name {
+      font-size: 22px;
+      font-weight: 800;
+      color: #111;
+      margin-bottom: 8px;
+    }
+
+    .pdf-export-contact {
+      font-size: 12px;
+      color: #555;
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    .pdf-section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #111;
+      margin-top: 16px;
+      margin-bottom: 6px;
+    }
+
+    .pdf-export-content .resume-section {
+      margin-bottom: 12px;
+    }
+
     .resume-actions {
       display: flex;
       gap: 10px;
@@ -846,8 +880,7 @@
 
     function downloadOptimizedResume() {
       const element = document.createElement('div');
-      element.className = 'pdf-export-content';
-      element.innerHTML = formatResumeHTML(currentResume || 'No resume available to export.');
+      element.innerHTML = buildPdfHtml(currentResume || 'No resume available to export.');
       
       const opt = {
         margin: 20,
@@ -968,6 +1001,35 @@
       return lines.join('');
     }
 
+    function extractContactInfo(text) {
+      const lines = (text || '').split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      const emailMatch = text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+      const phoneMatch = text.match(/\+?\d[\d\s\-()]{7,}\d/);
+      const email = emailMatch ? emailMatch[0] : '';
+      const phone = phoneMatch ? phoneMatch[0] : '';
+      const name = lines.find((line) => line && !email.includes(line) && !phone.includes(line) && !/^\*\*|---|[-*]\s/.test(line)) || '';
+      const location = lines.find((line) => /[A-Za-z]+\s*,\s*[A-Za-z]{2,}/.test(line)) || '';
+      return { name, email, phone, location };
+    }
+
+    function buildPdfHtml(text) {
+      const contact = extractContactInfo(text);
+      const headerHtml = `
+        <div class="pdf-export-header">
+          <div>
+            <div class="pdf-export-name">${contact.name || 'Your Name'}</div>
+          </div>
+          <div class="pdf-export-contact">
+            ${contact.location ? contact.location + '<br>' : ''}
+            ${contact.phone ? contact.phone + '<br>' : ''}
+            ${contact.email ? contact.email : ''}
+          </div>
+        </div>
+        <hr>
+      `;
+      return `<div class="pdf-export-content">${headerHtml}${formatResumeHTML(text)}</div>`;
+    }
+
     function renderDraftResume() {
       const preview = document.getElementById('createPreview');
       if (!preview) return;
@@ -1073,8 +1135,7 @@
 
     function downloadCreatedResume() {
       const element = document.createElement('div');
-      element.className = 'pdf-export-content';
-      element.innerHTML = formatResumeHTML(currentResume || 'No resume available to export.');
+      element.innerHTML = buildPdfHtml(currentResume || 'No resume available to export.');
       
       const opt = {
         margin: 20,
