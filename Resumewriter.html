@@ -882,7 +882,8 @@
       const wrapper = document.createElement('div');
       wrapper.style.position = 'absolute';
       wrapper.style.top = '0';
-      wrapper.style.left = '-9999px';
+      wrapper.style.left = '0';
+      wrapper.style.transform = 'translateX(-10000px)';
       wrapper.style.width = '210mm';
       wrapper.style.minHeight = '297mm';
       wrapper.style.padding = '40px';
@@ -890,9 +891,10 @@
       wrapper.style.color = '#111';
       wrapper.style.boxSizing = 'border-box';
       wrapper.style.fontFamily = "'Helvetica Neue', Arial, sans-serif";
-      wrapper.style.zIndex = '-9999';
+      wrapper.style.zIndex = '99999';
       wrapper.style.pointerEvents = 'none';
       wrapper.style.overflow = 'visible';
+      wrapper.style.display = 'block';
       wrapper.innerHTML = htmlContent;
       document.body.appendChild(wrapper);
       return wrapper;
@@ -1050,8 +1052,17 @@
         <hr>
       `;
       return `
-        <div style="width:100%;min-height:297mm;background:#ffffff;color:#111;box-sizing:border-box;font-family:'Helvetica Neue',Arial,sans-serif;">
-          <div class="pdf-export-content" style="background:#ffffff;color:#111;padding:0;box-sizing:border-box;width:100%;">
+        <div style="width:210mm;min-height:297mm;background:#ffffff;color:#111;box-sizing:border-box;font-family:'Helvetica Neue',Arial,sans-serif;padding:40px;">
+          <style>
+            .pdf-export-content { background:#ffffff;color:#111;box-sizing:border-box;width:100%; }
+            .pdf-export-content h3, .pdf-export-content h2, .pdf-export-content h4 { color:#111; margin: 16px 0 8px; }
+            .pdf-export-content p, .pdf-export-content li { color:#111; margin: 8px 0; font-size: 12pt; }
+            .pdf-export-content ul { padding-left: 18px; margin: 8px 0 16px; }
+            .pdf-export-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; }
+            .pdf-export-name { font-size: 24px; font-weight: 800; }
+            .pdf-export-contact { font-size: 11pt; color:#444; line-height:1.4; text-align:right; }
+          </style>
+          <div class="pdf-export-content">
             ${headerHtml}
             ${formatResumeHTML(text)}
           </div>
