@@ -880,15 +880,19 @@
 
     function createPdfExportElement(htmlContent) {
       const wrapper = document.createElement('div');
-      wrapper.style.position = 'fixed';
-      wrapper.style.top = '-9999px';
+      wrapper.style.position = 'absolute';
+      wrapper.style.top = '0';
       wrapper.style.left = '-9999px';
       wrapper.style.width = '210mm';
+      wrapper.style.minHeight = '297mm';
       wrapper.style.padding = '40px';
       wrapper.style.background = '#ffffff';
       wrapper.style.color = '#111';
       wrapper.style.boxSizing = 'border-box';
       wrapper.style.fontFamily = "'Helvetica Neue', Arial, sans-serif";
+      wrapper.style.zIndex = '-9999';
+      wrapper.style.pointerEvents = 'none';
+      wrapper.style.overflow = 'visible';
       wrapper.innerHTML = htmlContent;
       document.body.appendChild(wrapper);
       return wrapper;
@@ -1045,7 +1049,14 @@
         </div>
         <hr>
       `;
-      return `<div class="pdf-export-content" style="background:#ffffff;color:#111;padding:0;box-sizing:border-box;width:100%;font-family:'Helvetica Neue',Arial,sans-serif;">${headerHtml}${formatResumeHTML(text)}</div>`;
+      return `
+        <div style="width:100%;min-height:297mm;background:#ffffff;color:#111;box-sizing:border-box;font-family:'Helvetica Neue',Arial,sans-serif;">
+          <div class="pdf-export-content" style="background:#ffffff;color:#111;padding:0;box-sizing:border-box;width:100%;">
+            ${headerHtml}
+            ${formatResumeHTML(text)}
+          </div>
+        </div>
+      `;
     }
 
     function renderDraftResume() {
