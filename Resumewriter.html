@@ -878,19 +878,37 @@
       }
     }
 
+    function createPdfExportElement(htmlContent) {
+      const wrapper = document.createElement('div');
+      wrapper.style.position = 'fixed';
+      wrapper.style.top = '-9999px';
+      wrapper.style.left = '-9999px';
+      wrapper.style.width = '210mm';
+      wrapper.style.padding = '40px';
+      wrapper.style.background = '#ffffff';
+      wrapper.style.color = '#111';
+      wrapper.style.boxSizing = 'border-box';
+      wrapper.style.fontFamily = "'Helvetica Neue', Arial, sans-serif";
+      wrapper.innerHTML = htmlContent;
+      document.body.appendChild(wrapper);
+      return wrapper;
+    }
+
     function downloadOptimizedResume() {
-      const element = document.createElement('div');
-      element.innerHTML = buildPdfHtml(currentResume || 'No resume available to export.');
-      
+      const htmlContent = buildPdfHtml(currentResume || 'No resume available to export.');
+      const element = createPdfExportElement(htmlContent);
+
       const opt = {
         margin: 20,
         filename: 'Optimized_Resume.pdf',
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, backgroundColor: '#ffffff' },
+        html2canvas: { scale: 2, backgroundColor: '#ffffff', useCORS: true },
         jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
       };
-      
-      html2pdf().set(opt).from(element).save();
+
+      html2pdf().set(opt).from(element).save().finally(() => {
+        element.remove();
+      });
     }
 
     function copyOptimizedResume() {
@@ -1027,7 +1045,7 @@
         </div>
         <hr>
       `;
-      return `<div class="pdf-export-content">${headerHtml}${formatResumeHTML(text)}</div>`;
+      return `<div class="pdf-export-content" style="background:#ffffff;color:#111;padding:0;box-sizing:border-box;width:100%;font-family:'Helvetica Neue',Arial,sans-serif;">${headerHtml}${formatResumeHTML(text)}</div>`;
     }
 
     function renderDraftResume() {
@@ -1134,18 +1152,20 @@
     }
 
     function downloadCreatedResume() {
-      const element = document.createElement('div');
-      element.innerHTML = buildPdfHtml(currentResume || 'No resume available to export.');
+      const htmlContent = buildPdfHtml(currentResume || 'No resume available to export.');
+      const element = createPdfExportElement(htmlContent);
       
       const opt = {
         margin: 20,
         filename: 'My_Resume.pdf',
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, backgroundColor: '#ffffff' },
+        html2canvas: { scale: 2, backgroundColor: '#ffffff', useCORS: true },
         jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
       };
       
-      html2pdf().set(opt).from(element).save();
+      html2pdf().set(opt).from(element).save().finally(() => {
+        element.remove();
+      });
     }
 
     function copyCreatedResume() {
