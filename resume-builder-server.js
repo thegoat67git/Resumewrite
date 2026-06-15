@@ -10,7 +10,18 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
+// Enable CORS for the frontend origin and handle preflight requests explicitly
 app.use(cors());
+app.use((req, res, next) => {
+  const allowedOrigin = process.env.FRONTEND_ORIGIN || 'https://resumewrite.onrender.com';
+  res.header('Access-Control-Allow-Origin', allowedOrigin);
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(express.static(path.join(__dirname)));
