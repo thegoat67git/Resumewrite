@@ -901,20 +901,7 @@
     }
 
     function downloadOptimizedResume() {
-      const htmlContent = buildPdfHtml(currentResume || 'No resume available to export.');
-      const element = createPdfExportElement(htmlContent);
-
-      const opt = {
-        margin: 20,
-        filename: 'Optimized_Resume.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, backgroundColor: '#ffffff', useCORS: true },
-        jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
-      };
-
-      html2pdf().set(opt).from(element).save().finally(() => {
-        element.remove();
-      });
+      downloadResumeTextPdf('Optimized_Resume.pdf', currentResume || 'No resume available to export.');
     }
 
     function copyOptimizedResume() {
@@ -1070,6 +1057,88 @@
       `;
     }
 
+    function downloadResumeTextPdf(filename, text) {
+      if (typeof jsPDF === 'undefined') {
+        const htmlContent = buildPdfHtml(text);
+        const element = createPdfExportElement(htmlContent);
+        const opt = {
+          margin: 20,
+          filename,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, backgroundColor: '#ffffff', useCORS: true },
+          jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+        };
+        html2pdf().set(opt).from(element).save().finally(() => element.remove());
+        return;
+      }
+
+      const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
+      const lines = (text || '').split(/\r?\n/);
+      let y = 20;
+      pdf.setFont('helvetica');
+      pdf.setFontSize(18);
+
+      const contact = extractContactInfo(text);
+      const name = contact.name || 'Your Name';
+      pdf.text(name, 20, y);
+      y += 10;
+
+      pdf.setFontSize(10);
+      const contactLines = [];
+      if (contact.location) contactLines.push(contact.location);
+      if (contact.phone) contactLines.push(contact.phone);
+      if (contact.email) contactLines.push(contact.email);
+      if (contactLines.length) {
+        pdf.text(contactLines.join(' | '), 20, y);
+        y += 10;
+      }
+
+      pdf.setDrawColor(0);
+      pdf.setLineWidth(0.3);
+      pdf.line(20, y, 190, y);
+      y += 8;
+
+      pdf.setFontSize(12);
+      pdf.setFont('helvetica', 'normal');
+
+      lines.forEach((line) => {
+        if (y > 275) {
+          pdf.addPage();
+          y = 20;
+        }
+
+        const trimmed = line.trim();
+        if (!trimmed) {
+          y += 6;
+          return;
+        }
+
+        if (/^\*\*(.*)\*\*$/.test(trimmed)) {
+          pdf.setFontSize(14);
+          pdf.setFont('helvetica', 'bold');
+          pdf.text(trimmed.replace(/^\*\*(.*)\*\$$/, '$1'), 20, y);
+          y += 8;
+          pdf.setFontSize(12);
+          pdf.setFont('helvetica', 'normal');
+          return;
+        }
+
+        if (/^[\-*]\s+/.test(trimmed)) {
+          const content = trimmed.replace(/^[\-*]\s+/, '• ');
+          const wrapped = pdf.splitTextToSize(content, 170);
+          pdf.text(wrapped, 25, y);
+          y += wrapped.length * 6;
+          return;
+        }
+
+        const wrapped = pdf.splitTextToSize(trimmed, 170);
+        pdf.text(wrapped, 20, y);
+        y += wrapped.length * 6;
+      });
+
+      pdf.save(filename);
+    }
+
     function renderDraftResume() {
       const preview = document.getElementById('createPreview');
       if (!preview) return;
@@ -1174,20 +1243,7 @@
     }
 
     function downloadCreatedResume() {
-      const htmlContent = buildPdfHtml(currentResume || 'No resume available to export.');
-      const element = createPdfExportElement(htmlContent);
-      
-      const opt = {
-        margin: 20,
-        filename: 'My_Resume.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, backgroundColor: '#ffffff', useCORS: true },
-        jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
-      };
-      
-      html2pdf().set(opt).from(element).save().finally(() => {
-        element.remove();
-      });
+      downloadResumeTextPdf('My_Resume.pdf', currentResume || 'No resume available to export.');
     }
 
     function copyCreatedResume() {
