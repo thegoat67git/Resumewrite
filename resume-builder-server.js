@@ -256,6 +256,11 @@ ${resumeContent}
 
 Please apply the requested edits while maintaining professional quality and factual accuracy. Do NOT add information that wasn't mentioned. Return the updated resume.`;
 
+    if (!openai) {
+      console.warn('OpenAI unavailable; cannot edit resume.');
+      return res.status(503).json({ error: 'AI service unavailable. Set OPENAI_API_KEY to enable.' });
+    }
+
     const response = await openai.chat.completions.create({
       model: process.env.OPENAI_MODEL || 'gpt-4o',
       messages: [
