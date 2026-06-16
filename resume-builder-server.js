@@ -26,9 +26,25 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(express.static(path.join(__dirname)));
 
-// Initialize OpenAI
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+// Initialize OpenAI (guarded)
+let openai = null;
+if (process.env.OPENAI_API_KEY) {
+  try {
+    openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  } catch (err) {
+    console.warn('OpenAI SDK initialization failed:', err && err.message);
+    openai = null;
+  }
+} else {
+  console.warn('OPENAI_API_KEY not set — AI endpoints will return a friendly error.');
+}
+
+// Global unhandled rejection/logging guard to avoid crash on some hosts
+process.on('unhandledRejection', (reason, p) => {
+  console.error('Unhandled Rejection at:', p, 'reason:', reason);
+});
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
 });
 
 // Health check
@@ -66,6 +82,12 @@ Please provide the optimized resume in the following structured JSON format:
   "changes": ["List of key improvements made"],
   "notes": ["Any notes for the user about missing information or clarifications needed"]
 }`;
+
+    if (!openai) {
+      console.warn('OpenAI unavailable; returning deterministic mock optimization.');
+      // Basic pass-through mocked response to avoid breaking the client
+      return res.json({ optimizedResume: resumeContent, changes: ['Mock optimization: OpenAI unavailable'], notes: ['Set OPENAI_API_KEY to enable AI features'] });
+    }
 
     const response = await openai.chat.completions.create({
       model: process.env.OPENAI_MODEL || 'gpt-4o',
@@ -129,6 +151,11 @@ app.post('/api/generate-questions', async (req, res) => {
       Format: { "questions": [{ "id": "field_name", "question": "Question text", "placeholder": "Example", "type": "textarea", "required": false }] }`
     };
 
+    if (!openai) {
+      console.warn('OpenAI unavailable; cannot generate questions.');
+      return res.status(503).json({ error: 'AI service unavailable. Set OPENAI_API_KEY to enable.' });
+    }
+
     const response = await openai.chat.completions.create({
       model: process.env.OPENAI_MODEL || 'gpt-4o',
       messages: [
@@ -180,6 +207,12 @@ User Information:
 ${userDataSummary}
 
 Generate a complete professional resume in text format with clear section headers. Format it for professional use.`;
+
+    if (!openai) {
+      console.warn('OpenAI unavailable; returning concatenated user data as resume.');
+      const resume = Object.entries(userData).map(([k,v]) => `${k}: ${v}`).join('\n');
+      return res.json({ resume });
+    }
 
     const response = await openai.chat.completions.create({
       model: process.env.OPENAI_MODEL || 'gpt-4o',
