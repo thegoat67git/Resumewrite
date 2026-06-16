@@ -1,5 +1,10 @@
 var displayState = {};
 
+// Global auth helper for consistent checks across pages
+window.isLoggedIn = function() {
+  return localStorage.getItem('resumewrite_loggedIn') === 'true';
+};
+
 function hideShow(elementId) {
   var element = document.getElementById(elementId);
   if (!displayState[elementId]) {

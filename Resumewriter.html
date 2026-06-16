@@ -746,14 +746,14 @@
   <script>
     const API_URL = window.API_URL;
     function isLoggedIn() {
-      return localStorage.getItem('resumewrite_loggedIn') === 'true';
+      return (typeof window.isLoggedIn === 'function') ? window.isLoggedIn() : (localStorage.getItem('resumewrite_loggedIn') === 'true');
     }
 
     // Enforce authentication for this page: redirect unsigned users to login
     window.addEventListener('DOMContentLoaded', function() {
-      // allow renderer to run tests locally (localhost) without redirect
-      if (window.location.hostname !== 'localhost' && !isLoggedIn()) {
-        // redirect to login if not authenticated
+      // allow local testing on localhost or file: protocol without redirect
+      var runningLocally = (window.location.hostname === 'localhost' || window.location.protocol === 'file:');
+      if (!runningLocally && !isLoggedIn()) {
         window.location.href = 'login.html';
       }
     });
