@@ -5,6 +5,44 @@ window.isLoggedIn = function() {
   return localStorage.getItem('resumewrite_loggedIn') === 'true';
 };
 
+// Render auth status in nav: "Hello, <name>" and Logout link
+window.renderAuthStatus = function() {
+  try {
+    var navMenu = document.querySelector('.nav-menu');
+    if (!navMenu) return;
+
+    var existing = navMenu.querySelector('.auth-status');
+    if (existing) existing.remove();
+
+    var li = document.createElement('li');
+    li.className = 'auth-status';
+
+    if (window.isLoggedIn()) {
+      var username = localStorage.getItem('resumewrite_username') || 'User';
+      li.innerHTML = `<span style="color: #fff; margin-right:8px;">Hello, ${username}</span> <a href="#" id="logoutBtn" style="color:#ff6b6b; font-weight:600;">Logout</a>`;
+      navMenu.appendChild(li);
+
+      // hide any visible login links
+      var loginLink = navMenu.querySelector('a[href="login.html"]');
+      if (loginLink) {
+        var p = loginLink.closest('li'); if (p) p.style.display = 'none';
+      }
+
+      var btn = document.getElementById('logoutBtn');
+      if (btn) btn.addEventListener('click', function(e){ e.preventDefault(); logout(); });
+    } else {
+      // show login link if present
+      var loginLi = navMenu.querySelector('a[href="login.html"]');
+      if (loginLi) { var p = loginLi.closest('li'); if (p) p.style.display = ''; }
+    }
+  } catch (err) {
+    console.error('renderAuthStatus error', err);
+  }
+};
+
+// Ensure nav auth is rendered on DOM load
+window.addEventListener('DOMContentLoaded', function(){ window.renderAuthStatus(); });
+
 function hideShow(elementId) {
   var element = document.getElementById(elementId);
   if (!displayState[elementId]) {
