@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
       background: black;
@@ -1058,7 +1059,25 @@
     }
 
     function downloadResumeTextPdf(filename, text) {
-      if (typeof jsPDF === 'undefined') {
+      const raw = String(text || '');
+      const stripped = raw.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
+      const allLines = stripped.split(/\r?\n/).filter((line) => line.trim().length > 0);
+
+      console.group('PDF Export Debug');
+      console.log('currentResume exists:', raw.length > 0);
+      console.log('raw length:', raw.length);
+      console.log('stripped length:', stripped.length);
+      console.log('line count:', allLines.length);
+      console.log('preview sample:', stripped.slice(0, 200));
+      console.groupEnd();
+
+      if (!stripped) {
+        alert('PDF export cancelled: no resume content found. Please generate the resume first.');
+        return;
+      }
+
+      if (typeof window.jspdf === 'undefined' && typeof jsPDF === 'undefined') {
+        console.warn('jsPDF not available, falling back to html2pdf.');
         const htmlContent = buildPdfHtml(text);
         const element = createPdfExportElement(htmlContent);
         const opt = {
@@ -1072,68 +1091,43 @@
         return;
       }
 
-      const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
-      const lines = (text || '').split(/\r?\n/);
-      let y = 20;
-      pdf.setFont('helvetica');
-      pdf.setFontSize(18);
-
-      const contact = extractContactInfo(text);
-      const name = contact.name || 'Your Name';
-      pdf.text(name, 20, y);
-      y += 10;
-
-      pdf.setFontSize(10);
-      const contactLines = [];
-      if (contact.location) contactLines.push(contact.location);
-      if (contact.phone) contactLines.push(contact.phone);
-      if (contact.email) contactLines.push(contact.email);
-      if (contactLines.length) {
-        pdf.text(contactLines.join(' | '), 20, y);
-        y += 10;
+      const { jsPDF: JsPDF } = window.jspdf || (typeof jsPDF !== 'undefined' ? { jsPDF } : {});
+      if (!JsPDF) {
+        console.error('jsPDF constructor not found.');
+        alert('PDF export failed: jsPDF is unavailable.');
+        return;
       }
 
-      pdf.setDrawColor(0);
+      const pdf = new JsPDF({ unit: 'mm', format: 'a4' });
+      pdf.setTextColor(0, 0, 0);
+      pdf.setFont('helvetica', 'normal');
+
+      let y = 20;
+      pdf.setFontSize(18);
+      pdf.text('Resume Export', 20, y);
+      y += 10;
       pdf.setLineWidth(0.3);
       pdf.line(20, y, 190, y);
-      y += 8;
+      y += 10;
 
       pdf.setFontSize(12);
       pdf.setFont('helvetica', 'normal');
 
-      lines.forEach((line) => {
-        if (y > 275) {
+      allLines.forEach((line) => {
+        if (y > 280) {
           pdf.addPage();
           y = 20;
         }
 
-        const trimmed = line.trim();
-        if (!trimmed) {
+        const clean = line.trim();
+        if (!clean) {
           y += 6;
           return;
         }
 
-        if (/^\*\*(.*)\*\*$/.test(trimmed)) {
-          pdf.setFontSize(14);
-          pdf.setFont('helvetica', 'bold');
-          pdf.text(trimmed.replace(/^\*\*(.*)\*\$$/, '$1'), 20, y);
-          y += 8;
-          pdf.setFontSize(12);
-          pdf.setFont('helvetica', 'normal');
-          return;
-        }
-
-        if (/^[\-*]\s+/.test(trimmed)) {
-          const content = trimmed.replace(/^[\-*]\s+/, '• ');
-          const wrapped = pdf.splitTextToSize(content, 170);
-          pdf.text(wrapped, 25, y);
-          y += wrapped.length * 6;
-          return;
-        }
-
-        const wrapped = pdf.splitTextToSize(trimmed, 170);
+        const wrapped = pdf.splitTextToSize(clean, 170);
         pdf.text(wrapped, 20, y);
-        y += wrapped.length * 6;
+        y += wrapped.length * 7;
       });
 
       pdf.save(filename);
