@@ -1100,19 +1100,36 @@
 
       const pdf = new JsPDF({ unit: 'mm', format: 'a4' });
       pdf.setTextColor(0, 0, 0);
-      pdf.setFont('helvetica', 'normal');
 
       let y = 20;
-      pdf.setFontSize(18);
-      pdf.text('Resume Export', 20, y);
-      y += 10;
-      pdf.setLineWidth(0.3);
-      pdf.line(20, y, 190, y);
+      const margin = 20;
+      const maxWidth = 190;
+
+      // Extract contact info
+      const contact = extractContactInfo(raw);
+      
+      // Title with name
+      pdf.setFontSize(22);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text(contact.name || 'Resume', margin, y);
       y += 10;
 
-      pdf.setFontSize(12);
+      // Contact info line
+      pdf.setFontSize(10);
       pdf.setFont('helvetica', 'normal');
+      const contactStr = [contact.location, contact.phone, contact.email].filter(Boolean).join(' | ');
+      if (contactStr) {
+        pdf.text(contactStr, margin, y);
+        y += 8;
+      }
 
+      // Separator line
+      pdf.setLineWidth(0.3);
+      pdf.line(margin, y, maxWidth + margin, y);
+      y += 10;
+
+      // Process content lines with proper formatting
+      pdf.setFontSize(11);
       allLines.forEach((line) => {
         if (y > 280) {
           pdf.addPage();
@@ -1121,13 +1138,36 @@
 
         const clean = line.trim();
         if (!clean) {
-          y += 6;
+          y += 4;
           return;
         }
 
-        const wrapped = pdf.splitTextToSize(clean, 170);
-        pdf.text(wrapped, 20, y);
-        y += wrapped.length * 7;
+        // Check if it's a section header (all caps or ** markers)
+        const isSectionHeader = /^\*\*(.+)\*\*$/.test(clean) || /^[A-Z][A-Z\s]+$/.test(clean);
+        if (isSectionHeader) {
+          pdf.setFontSize(12);
+          pdf.setFont('helvetica', 'bold');
+          const headerText = clean.replace(/\*\*/g, '');
+          pdf.text(headerText, margin, y);
+          y += 9;
+          pdf.setFontSize(11);
+          pdf.setFont('helvetica', 'normal');
+          return;
+        }
+
+        // Check if it's a bullet point
+        if (/^[\-\*]\s+/.test(clean)) {
+          const bulletText = clean.replace(/^[\-\*]\s+/, '');
+          const wrapped = pdf.splitTextToSize('• ' + bulletText, maxWidth - 5);
+          pdf.text(wrapped, margin + 3, y);
+          y += wrapped.length * 6 + 2;
+          return;
+        }
+
+        // Regular text
+        const wrapped = pdf.splitTextToSize(clean, maxWidth);
+        pdf.text(wrapped, margin, y);
+        y += wrapped.length * 6 + 2;
       });
 
       pdf.save(filename);
