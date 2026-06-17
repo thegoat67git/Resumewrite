@@ -594,6 +594,7 @@
         <li><a href="about.html" class="nav-link">About Us</a></li>
         <li><a href="Contact.html" class="nav-link">Contact Us</a></li>
         <li><a href="Resumewriter.html" class="nav-link active">Resume Writer</a></li>
+        <li><a href="reveal-resume.html" class="nav-link">Reveal Resume</a></li>
         <li><a href="Interview%20tips%20bot.html" class="nav-link">Interview Tips</a></li>
       </ul>
     </div>
@@ -636,8 +637,8 @@
           <div id="optimizeMessage"></div>
 
           <div class="tabs">
-            <button class="tab active" onclick="switchTab('optimize', 'upload')">Upload File</button>
-            <button class="tab" onclick="switchTab('optimize', 'paste')">Paste Text</button>
+            <button class="tab active" onclick="switchTab('optimize', 'upload', event)">Upload File</button>
+            <button class="tab" onclick="switchTab('optimize', 'paste', event)">Paste Text</button>
           </div>
 
           <!-- Upload Tab -->
@@ -742,11 +743,11 @@
   </footer>
 
   <script src="api-config.js"></script>
-  <script src="api-config.js"></script>
+  <script src="script.js"></script>
   <script>
     const API_URL = window.API_URL;
     function isLoggedIn() {
-      return (typeof window.isLoggedIn === 'function') ? window.isLoggedIn() : (localStorage.getItem('resumewrite_loggedIn') === 'true');
+      return localStorage.getItem('resumewrite_loggedIn') === 'true';
     }
 
     // Enforce authentication for this page: redirect unsigned users to login
@@ -793,7 +794,7 @@
 
     // ===== OPTIMIZE WORKFLOW =====
 
-    function switchTab(workflow, tab) {
+    function switchTab(workflow, tab, event) {
       const tabElement = document.getElementById(`${workflow}-${tab}`);
       const container = tabElement.parentElement;
       const tabs = container.querySelectorAll('.tab-content');
@@ -801,7 +802,9 @@
       tabElement.style.display = 'block';
       
       container.querySelectorAll(`.tab`).forEach(t => t.classList.remove('active'));
-      event.target.classList.add('active');
+      if (event && event.target) {
+        event.target.classList.add('active');
+      }
     }
 
     function handleFileUpload(event) {
